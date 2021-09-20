@@ -21,6 +21,7 @@ chatterbot-corpus==1.2.0
 requests
 shippo
 django-paypal
+braintree
 # ChatterBot==1.0.4
 # chatterbot-corpus==1.2.0
 google-api-core==2.0.1

@@ -1,9 +1,10 @@
 name: CICD Vaanah-Backend
 
+
 on:
   push:
     branches:
-      - feature/vaana-853
+      - main
 
 jobs:
 # Test application Image
@@ -70,7 +71,7 @@ jobs:
         file: ./Dockerfile.django
         builder: ${{ steps.buildx.outputs.name }}
         push: true
-        tags: ${{ secrets.DOCKER_HUB_USERNAME }}/vaana-django:v1.5.2
+        tags: ${{ secrets.DOCKER_HUB_USERNAME }}/vaana-django:v1.5.3
         # cache-from: type=local,src=/tmp/.buildx-cache
         # cache-to: type=local,dest=/tmp/.buildx-cache
 

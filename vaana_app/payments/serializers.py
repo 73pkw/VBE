@@ -27,3 +27,15 @@ class StripePaymentIntentConfirmSerializer(serializers.Serializer):
         return {
             'order_number' : order_number
         }
+
+class BraintreeTransactionSerializer(serializers.Serializer):
+    nonce = serializers.CharField(max_length=255)
+    device_data = serializers.CharField(max_length=255, required=False, default=None)
+    payment = PaymentSerializer()
+
+    class Meta:
+        fields = [
+            "nonce",
+            "device_data",
+            "payment"
+        ]
