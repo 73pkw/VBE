@@ -37,8 +37,7 @@ def register_social_user(provider, user_id, email, name):
                 'gender': registered_user.gender,
                 'account_type': registered_user.account_type,
                 'address': registered_user.address.id,
-
-                }
+            }
 
         else:
             raise AuthenticationFailed(
@@ -52,8 +51,6 @@ def register_social_user(provider, user_id, email, name):
             "zipcode": "to be change"
         }
         address = Address.objects.create(**add)
-        print("add",add)
-        print("address",address)
 
         user = {
             'username': generate_username(name), 
