@@ -288,15 +288,14 @@ class UserRetrieveUpdateAPIView(RetrieveUpdateAPIView):
     )    
     def update(self, request, *args, **kwargs):
         user_data = json.loads(request.body)
-        add_id = request.user.address.id
-        address = Address.objects.select_related().filter(id=add_id).update(
+        address_id = request.user.address.id
+        address = Address.objects.select_related().filter(id=address_id).update(
             country=user_data.get('address', dict()).get('country'),
             state=user_data.get('address', dict()).get('state'),
             zipcode=user_data.get('address', dict()).get('zipcode'),
             street=user_data.get('address', dict()).get('street'),
             updated_at=now()
         )
-        print(address)
         serializer_data = {
             'username': user_data.get('username', request.user.username),
             'email': user_data.get('email', request.user.email),

@@ -44,13 +44,13 @@ def register_social_user(provider, user_id, email, name):
                 detail='Please continue your login using ' + filtered_user_by_email[0].auth_provider)
 
     else:
-        add = {
+        adresse = {
             "country": "to be change",
             "state": "to be change",
             "street": "to be change",
             "zipcode": "to be change"
         }
-        address = Address.objects.create(**add)
+        address = Address.objects.create(**adresse)
 
         user = {
             'username': generate_username(name), 
