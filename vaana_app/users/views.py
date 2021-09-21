@@ -40,7 +40,8 @@ from addresses.models import Address
 from rest_framework import filters
 from django.template.loader import get_template, render_to_string
 from django.shortcuts import render
- 
+from django.utils.timezone import now
+
 class UserAPIView(APIView):
     permission_classes = (IsAuthenticated,)
     renderer_classes = (UserJSONRenderer,)
@@ -287,7 +288,14 @@ class UserRetrieveUpdateAPIView(RetrieveUpdateAPIView):
     )    
     def update(self, request, *args, **kwargs):
         user_data = json.loads(request.body)
- 
+        address_id = request.user.address.id
+        address = Address.objects.select_related().filter(id=address_id).update(
+            country=user_data.get('address', dict()).get('country'),
+            state=user_data.get('address', dict()).get('state'),
+            zipcode=user_data.get('address', dict()).get('zipcode'),
+            street=user_data.get('address', dict()).get('street'),
+            updated_at=now()
+        )
         serializer_data = {
             'username': user_data.get('username', request.user.username),
             'email': user_data.get('email', request.user.email),
