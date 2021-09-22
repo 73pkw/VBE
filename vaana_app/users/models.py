@@ -115,6 +115,8 @@ class User(AbstractBaseUser, PermissionsMixin, TimestampedModel):
 
     auth_provider = models.CharField(max_length=255, blank=False, null=False, default=AUTH_PROVIDERS.get('email'))
 
+    fullname = models.CharField(max_length=255, null=True, blank=True)
+
     # The `USERNAME_FIELD` property tells us which field we will use to log in.
     # In this case, we want that to be the email field.
     USERNAME_FIELD = 'email'
