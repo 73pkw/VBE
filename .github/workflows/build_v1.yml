@@ -22,7 +22,7 @@ jobs:
   #       run: docker-compose run vaanah-test
 
   build-and-deploy:
-    needs: test
+    # needs: test
     name: Vaanah Build and Deploy
     runs-on: ubuntu-latest
     steps:
