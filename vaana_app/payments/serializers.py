@@ -1,5 +1,5 @@
 from rest_framework import fields, serializers
-from .models import PaymentModel
+from .models import BankAccount, CreditCard, PaymentModel
 
 class PaymentSerializer(serializers.ModelSerializer):
     class Meta:
@@ -38,4 +38,27 @@ class BraintreeTransactionSerializer(serializers.Serializer):
             "nonce",
             "device_data",
             "payment"
+        ]
+
+class CreditCardSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CreditCard
+        fields = [
+            'id',
+            'card_number',
+            'card_name',
+            'cvc',
+            'expiration_date',
+            'user'
+        ]
+
+class BankAccountSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = BankAccount
+        fields = [
+            'id',
+            'bic',
+            'iban',
+            'account_name',
+            'user',
         ]
