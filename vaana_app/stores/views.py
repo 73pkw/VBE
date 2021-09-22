@@ -55,7 +55,6 @@ class StoreAPIView(APIView):
     def post(self, request):
         payload = json.loads(request.body)
         user = request.user
-        # store = request.body
         serializer = StoreSerializer(data=payload)
         serializer.is_valid(raise_exception=True)
         
