@@ -76,10 +76,10 @@
         name: docker
 
     # change vaanah_test3 to vaanah_back-new
-    # - name: Kill Previous container
-    #   shell: |
-    #     docker kill vaanah_back-new
-    #   become: yes
+    - name: Kill Previous container
+      shell: |
+        docker kill vaanah_test3
+      become: yes
 
     # - name: Prune container
     #   docker_prune:
@@ -97,5 +97,5 @@
 
     - name: Run Image
       shell: |
-        docker run -d -p 8047:8020 --name vaanah_back-new terinnova/vaanah-django:v1.5.3
+        docker run -d -p 8082:8020 --name vaanah_test3 terinnova/vaanah-django:v1.5.3
       become: yes
