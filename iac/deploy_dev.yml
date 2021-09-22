@@ -23,7 +23,7 @@
         groups: docker
         append: true
 
-#    - meta: reset_connection                # <--- must do this if using pipelining
+    #    - meta: reset_connection                # <--- must do this if using pipelining
 
     ##### setup docker
 
@@ -33,11 +33,11 @@
         update_cache: yes
         state: latest
         name:
-        - apt-transport-https
-        - ca-certificates
-        - curl
-        - gpg-agent
-        - software-properties-common
+          - apt-transport-https
+          - ca-certificates
+          - curl
+          - gpg-agent
+          - software-properties-common
 
     - name: Add docker GPG key
       become: true
@@ -57,9 +57,9 @@
         update_cache: yes
         state: latest
         name:
-        - docker-ce
-        - docker-ce-cli
-        - containerd.io
+          - docker-ce
+          - docker-ce-cli
+          - containerd.io
 
     ##### setup ansible <---> docker
 
@@ -91,10 +91,10 @@
 
     - name: Pull Backend app locally
       shell: |
-        docker pull papeterinnova/vaana-django:v1.5.3
+        docker pull terinnova/vaanah-django:v1.5.3
       become: yes
 
     - name: Run Image
       shell: |
-        docker run -d -p 8082:8020 --name vaanah_test3 papeterinnova/vaana-django:v1.5.3
+        docker run -d -p 8082:8020 --name vaanah_test3 terinnova/vaanah-django:v1.5.3
       become: yes
