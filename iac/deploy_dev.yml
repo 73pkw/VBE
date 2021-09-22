@@ -75,19 +75,20 @@
       pip:
         name: docker
 
-    - name: Kill Previous container
-      shell: |
-        docker kill vaanah_test3
-      become: yes
+    # change vaanah_test3 to vaanah_back-new
+    # - name: Kill Previous container
+    #   shell: |
+    #     docker kill vaanah_back-new
+    #   become: yes
 
-    - name: Prune container
-      docker_prune:
-        containers: yes
-        images: yes
-        images_filters:
-          dangling: false
-        volumes: yes
-        builder_cache: yes
+    # - name: Prune container
+    #   docker_prune:
+    #     containers: yes
+    #     images: yes
+    #     images_filters:
+    #       dangling: false
+    #     volumes: yes
+    #     builder_cache: yes
 
     - name: Pull Backend app locally
       shell: |
@@ -96,5 +97,5 @@
 
     - name: Run Image
       shell: |
-        docker run -d -p 8082:8020 --name vaanah_test3 terinnova/vaanah-django:v1.5.3
+        docker run -d -p 8047:8020 --name vaanah_back-new terinnova/vaanah-django:v1.5.3
       become: yes
