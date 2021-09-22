@@ -17,7 +17,8 @@ class ShippoAddressSerializer(serializers.ModelSerializer):
             "zip_code",
             "country",
             "phone",
-            "email"
+            "email",
+            "user"
         ]
 class ShippoParcelSerializer(serializers.ModelSerializer):
     class Meta:
