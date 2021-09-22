@@ -40,7 +40,8 @@ from addresses.models import Address
 from rest_framework import filters
 from django.template.loader import get_template, render_to_string
 from django.shortcuts import render
- 
+from django.utils.timezone import now
+
 class UserAPIView(APIView):
     permission_classes = (IsAuthenticated,)
     renderer_classes = (UserJSONRenderer,)
@@ -136,7 +137,7 @@ class RegistrationAPIView(APIView):
         serializer.is_valid(raise_exception=True)
         address_data = user['address']
         address = Address.objects.create(country=address_data['country'], state=address_data['state'], street=address_data['street'], zipcode=address_data['zipcode'])
-        user = User.objects.create_user(username=user['username'], email=user['email'], password=user['password'], account_type=user['account_type'], gender=user['gender'], address=address)
+        user = User.objects.create_user(username=user['username'], email=user['email'], password=user['password'], fullname=user['fullname'], account_type=user['account_type'], gender=user['gender'], address=address)
         """ addressSerializer = self.addressSerializer(data=address)
         addressSerializer.is_valid(raise_exception=True)
         serializer.data.address = addressSerializer.data
@@ -287,10 +288,18 @@ class UserRetrieveUpdateAPIView(RetrieveUpdateAPIView):
     )    
     def update(self, request, *args, **kwargs):
         user_data = json.loads(request.body)
- 
+        address_id = request.user.address.id
+        address = Address.objects.select_related().filter(id=address_id).update(
+            country=user_data.get('address', dict()).get('country'),
+            state=user_data.get('address', dict()).get('state'),
+            zipcode=user_data.get('address', dict()).get('zipcode'),
+            street=user_data.get('address', dict()).get('street'),
+            updated_at=now()
+        )
         serializer_data = {
             'username': user_data.get('username', request.user.username),
             'email': user_data.get('email', request.user.email),
+            'fullname': user_data.get('fullname', request.user.fullname),
             'account_type': user_data.get('account_type', request.user.account_type),
             'gender': user_data.get('gender', request.user.gender),
         }

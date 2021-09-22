@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import models
 
 from cores.models import TimestampedModel
@@ -15,6 +16,20 @@ class Address(TimestampedModel):
     country = models.CharField(max_length=255)
     phone = models.CharField(max_length=255)
     email = models.CharField(max_length=255)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, blank=True, null=True, related_name='shipping_address')
+
+    def update(self, data):
+        self.company = data['company'] if 'company' in data else None
+        self.name = data['name']
+        self.state = data['state']
+        self.street1 = data['street1']
+        self.city = data['city']
+        self.zip_code = data['zip_code']
+        self.country = data['country']
+        self.phone = data['phone']
+        self.email = data['email']
+
+        return self.save()
 
 class Parcel(TimestampedModel):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)

@@ -37,23 +37,20 @@ def register_social_user(provider, user_id, email, name):
                 'gender': registered_user.gender,
                 'account_type': registered_user.account_type,
                 'address': registered_user.address.id,
-
-                }
+            }
 
         else:
             raise AuthenticationFailed(
                 detail='Please continue your login using ' + filtered_user_by_email[0].auth_provider)
 
     else:
-        add = {
+        adresse = {
             "country": "to be change",
             "state": "to be change",
             "street": "to be change",
             "zipcode": "to be change"
         }
-        address = Address.objects.create(**add)
-        print("add",add)
-        print("address",address)
+        address = Address.objects.create(**adresse)
 
         user = {
             'username': generate_username(name), 
