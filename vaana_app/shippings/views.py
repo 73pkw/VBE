@@ -275,7 +275,7 @@ class ShippoAddressRetrieveUpdateAPIView(RetrieveUpdateAPIView):
             address = Address.objects.get(id=address_id, user=user)
             address.delete()
             response = {
-                'body': 'OK',
+                'body': 'Address removed succefully',
                 'status': status.HTTP_200_OK
             }
         except ObjectDoesNotExist:

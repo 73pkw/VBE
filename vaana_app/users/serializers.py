@@ -30,7 +30,7 @@ class SellerRegistrationSerializer(serializers.ModelSerializer):
         model = User
         # List all of the fields that could possibly be included in a request
         # or response, including fields specified explicitly above.
-        fields = ('id', 'email', 'username', 'password', 'token', 'is_verified', 'account_type', 'gender', 'address')
+        fields = ('id', 'email', 'username', 'password', 'fullname', 'token', 'is_verified', 'account_type', 'gender', 'address')
 
     def create(self, validated_data):
         # Use the `create_user` method we wrote earlier to create a new user.
@@ -55,7 +55,7 @@ class RegistrationSerializer(serializers.ModelSerializer):
         model = User
         # List all of the fields that could possibly be included in a request
         # or response, including fields specified explicitly above.
-        fields = ('id', 'email', 'username', 'password', 'token', 'is_verified', 'account_type', 'gender', 'address')
+        fields = ('id', 'email', 'username', 'password', 'fullname', 'token', 'is_verified', 'account_type', 'gender', 'address')
 
     def create(self, validated_data):
         # Use the `create_user` method we wrote earlier to create a new user.
@@ -73,6 +73,7 @@ class LoginSerializer(serializers.Serializer):
     email = serializers.CharField(max_length=255)
     username = serializers.CharField(max_length=255, read_only=True)
     password = serializers.CharField(max_length=128, write_only=True)
+    fullname = serializers.CharField(max_length=255, write_only=True)
     token = serializers.CharField(max_length=255, read_only=True)
 
     # is_verified = serializers.BooleanField(read_only=True)
@@ -135,6 +136,7 @@ class LoginSerializer(serializers.Serializer):
             'email': user.email,
             'username': user.username,
             'token': user.token,
+            'fullname': user.fullname,
             'account_type': user.account_type, 
             'gender':user.gender,
             'address':user.address,
@@ -166,6 +168,7 @@ class UserSerializer(serializers.ModelSerializer):
             'email', 
             'username', 
             'password', 
+            'fullname',
             'token', 
             'is_verified', 
             'account_type', 
