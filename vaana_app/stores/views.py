@@ -139,21 +139,28 @@ class StoreUpdateDeleteAPIView(RetrieveUpdateAPIView):
         user = request.user
         payload = json.loads(request.body)
         try:
+            store = Store.objects.get(id=store_id)
             store_item = Store.objects.filter(created_by=user, id=store_id)
-            # address_id = store_item.address.id
-            # print(address_id)
-            # address = Address.objects.select_related().filter(id=address_id).update(
-            #     country=payload.get('address', dict()).get('country'),
-            #     state=payload.get('address', dict()).get('state'),
-            #     zipcode=payload.get('address', dict()).get('zipcode'),
-            #     street=payload.get('address', dict()).get('street'),
+            print(store.address)
+            address_id = store.address.id
+            print(address_id)
+            address = Address.objects.select_related().filter(id=address_id).update(
+                country=payload.get('address', dict()).get('country'),
+                state=payload.get('address', dict()).get('state'),
+                zipcode=payload.get('address', dict()).get('zipcode'),
+                street=payload.get('address', dict()).get('street'),
+                updated_at=now()
+            )
+            # store_item.update(
+            #     name=payload['name'],
+            #     is_active=payload['is_active'],
             #     updated_at=now()
             # )
-            store_item.update(
-                **payload,
-                updated_at=now()
-                )
-            store = Store.objects.get(id=store_id)
+            store.name = payload['name']
+            store.is_active = payload['is_active']
+            store.image = payload['image']
+            store.save()
+            
             serializer = StoreResponseSerializer(store)
             response = {
                 'body': serializer.data,
