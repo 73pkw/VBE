@@ -16,7 +16,7 @@ class CountryView(APIView):
 
     @csrf_exempt
     def get(self, request, *args, **kwargs):
-        api_response = requests.get('https://restcountries.eu/rest/v2/all')
+        api_response = requests.get('https://restcountries.com/v3/all')
         #countries = Country.objects.all()
         # TODO: stock response in database 
 
