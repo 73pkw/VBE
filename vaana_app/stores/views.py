@@ -141,9 +141,7 @@ class StoreUpdateDeleteAPIView(RetrieveUpdateAPIView):
         try:
             store = Store.objects.get(id=store_id)
             store_item = Store.objects.filter(created_by=user, id=store_id)
-            print(store.address)
             address_id = store.address.id
-            print(address_id)
             address = Address.objects.select_related().filter(id=address_id).update(
                 country=payload.get('address', dict()).get('country'),
                 state=payload.get('address', dict()).get('state'),
