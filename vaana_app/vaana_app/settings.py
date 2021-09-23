@@ -126,7 +126,7 @@ WSGI_APPLICATION = 'vaana_app.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'postgres8',
+        'NAME': 'postgres9',
         'USER': 'postgres',
         'PASSWORD': 'admin',
         'HOST': 'localhost',
