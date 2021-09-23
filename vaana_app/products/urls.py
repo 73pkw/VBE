@@ -1,6 +1,7 @@
 from django.urls import path
 
 from . import views
+from . import parcel_views
 
 urlpatterns = [
 
@@ -14,5 +15,8 @@ urlpatterns = [
     path('products/reviews', views.ProductReviewsAPIView.as_view()),
     path('products/reviews/<uuid:review_id>', views.ProductReviewUpdateDeleteAPIView.as_view()),
     path('products/sellers', views.SellerProductAPIView.as_view()),
+
+    path('products/<uuid:product_id>/parcels', parcel_views.ParcelAPIVIew.as_view()),
+    path('products/parcels/<parcel_id>', parcel_views.ParcelRetrieveUpdataAPIView.as_view()),
 
 ]

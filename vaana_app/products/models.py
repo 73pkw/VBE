@@ -8,6 +8,27 @@ from files.models import File
 from django.utils.text import slugify 
 from django.utils.timezone import now
 
+class Parcel(TimestampedModel):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    object_id = models.CharField(max_length=255, blank=True, default=None, null=True)
+    parcel_length = models.DecimalField(max_digits=12, decimal_places=3)
+    parcel_width = models.DecimalField(max_digits=12, decimal_places=3)
+    parcel_weight = models.DecimalField(max_digits=12, decimal_places=3)
+    parcel_height = models.DecimalField(max_digits=12, decimal_places=3)
+    distance_unit = models.CharField(max_length=255)
+    mass_unit = models.CharField(max_length=255)
+    created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, blank=True)
+
+    def update(self, data):
+        self.parcel_length = data['parcel_length']
+        self.parcel_width = data['parcel_width']
+        self.parcel_weight = data['parcel_weight']
+        self.parcel_height = data['parcel_height']
+        self.distance_unit = data['distance_unit']
+        self.mass_unit = data['mass_unit']
+
+        return self.save()
+
 class Product(TimestampedModel):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     store = models.ForeignKey(Store, related_name='products', on_delete=models.CASCADE)
@@ -21,6 +42,7 @@ class Product(TimestampedModel):
     views = models.IntegerField(default=0)
     is_active = models.BooleanField()
     images = models.ManyToManyField(File)
+    parcel = models.ForeignKey(Parcel, on_delete=models.CASCADE, blank=True, null=True)
 
     class Meta:
         ordering = ('name',)
