@@ -17,6 +17,17 @@ class Parcel(TimestampedModel):
     parcel_height = models.DecimalField(max_digits=12, decimal_places=3)
     distance_unit = models.CharField(max_length=255)
     mass_unit = models.CharField(max_length=255)
+    created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, blank=True)
+
+    def update(self, data):
+        self.parcel_length = data['parcel_length']
+        self.parcel_width = data['parcel_width']
+        self.parcel_weight = data['parcel_weight']
+        self.parcel_height = data['parcel_height']
+        self.distance_unit = data['distance_unit']
+        self.mass_unit = data['mass_unit']
+
+        return self.save()
 
 class Product(TimestampedModel):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)

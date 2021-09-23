@@ -14,7 +14,8 @@ class ParcelSerializer(serializers.ModelSerializer):
             "parcel_weight",
             "parcel_height",
             "distance_unit",
-            "mass_unit"
+            "mass_unit",
+            "created_by"
         ]
 
 class ProductReviewResultSerializer(serializers.ModelSerializer):
