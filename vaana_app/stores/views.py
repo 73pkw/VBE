@@ -1,3 +1,5 @@
+from addresses.models import Address
+from addresses.serializers import AddressSerializer
 from rest_framework.decorators import permission_classes
 from rest_framework.generics import ListAPIView, RetrieveUpdateAPIView
 from rest_framework.pagination import PageNumberPagination
@@ -55,6 +57,7 @@ class StoreAPIView(APIView):
         user = request.user
         serializer = StoreSerializer(data=payload)
         serializer.is_valid(raise_exception=True)
+        
         response = {
             'body': {
                 'error':'Unauthorized action'
@@ -63,12 +66,20 @@ class StoreAPIView(APIView):
         }
         if user.account_type == User.SELLER:
             try:
+                address_data = payload['address']
+                address = Address.objects.create(
+                    country=address_data['country'], 
+                    state=address_data['state'], 
+                    street=address_data['street'], 
+                    zipcode=address_data['zipcode']
+                )
+       
                 store = Store.objects.create(
                     name=payload["name"],
                     created_by=user,
-                    store_address=payload['store_address'],
                     is_active= payload["is_active"],
                     image= payload['image'],
+                    address=address
                 )
                 serializer = StoreResponseSerializer(store)
                 response['body'] = serializer.data
@@ -81,7 +92,6 @@ class StoreAPIView(APIView):
 
 class StoreProductsAPIView(APIView):
     serializer_class = ProductSerializer
-
     
     def get(self, request, store_id):
         try:
@@ -129,12 +139,26 @@ class StoreUpdateDeleteAPIView(RetrieveUpdateAPIView):
         user = request.user
         payload = json.loads(request.body)
         try:
-            store_item = Store.objects.filter(created_by=user, id=store_id)
-            store_item.update(
-                **payload,
-                updated_at=now()
-                )
             store = Store.objects.get(id=store_id)
+            store_item = Store.objects.filter(created_by=user, id=store_id)
+            address_id = store.address.id
+            address = Address.objects.select_related().filter(id=address_id).update(
+                country=payload.get('address', dict()).get('country'),
+                state=payload.get('address', dict()).get('state'),
+                zipcode=payload.get('address', dict()).get('zipcode'),
+                street=payload.get('address', dict()).get('street'),
+                updated_at=now()
+            )
+            # store_item.update(
+            #     name=payload['name'],
+            #     is_active=payload['is_active'],
+            #     updated_at=now()
+            # )
+            store.name = payload['name']
+            store.is_active = payload['is_active']
+            store.image = payload['image']
+            store.save()
+            
             serializer = StoreResponseSerializer(store)
             response = {
                 'body': serializer.data,
