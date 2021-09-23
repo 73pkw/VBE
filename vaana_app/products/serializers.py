@@ -1,7 +1,22 @@
 from users.serializers import UserSerializer
 from rest_framework import serializers
-from .models import Product, ProductReview
+from .models import Parcel, Product, ProductReview
 from files.serializers import FileSerializer
+
+class ParcelSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Parcel
+        fields = [
+            "id",
+            "object_id",
+            "parcel_length",
+            "parcel_width",
+            "parcel_weight",
+            "parcel_height",
+            "distance_unit",
+            "mass_unit",
+            "created_by"
+        ]
 
 class ProductReviewResultSerializer(serializers.ModelSerializer):
     user = UserSerializer()
@@ -84,3 +99,4 @@ class ProductResponseSerializer(serializers.ModelSerializer):
             "store",
             "reviews",
         ]
+
