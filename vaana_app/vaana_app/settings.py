@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 
 import os
 from pathlib import Path
-from datetime  import timedelta
+from datetime import timedelta
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -31,7 +31,7 @@ ALLOWED_HOSTS = ['*']
 CORS_ORIGIN_ALLOW_ALL = True
 
 # smtp email configuration
-EMAIL_BACKEND="django.core.mail.backends.smtp.EmailBackend"
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = 'smtp.ionos.de'
 EMAIL_HOST_USER = 'test.vaanah@kaeyros-analytics.de'
 EMAIL_HOST_PASSWORD = '$Happy.Vaanah$'
@@ -126,11 +126,10 @@ WSGI_APPLICATION = 'vaana_app.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'postgres7',
-        'USER': 'postgres',
-        'PASSWORD': 'admin',
-        'HOST': 'localhost',
-        'PORT': '5432',
+        'NAME': 'release2',
+        'USER': 'vaanah_user',
+        'PASSWORD': 'secretsecret',
+        'HOST': 'vaanahdb.cvamgenajfwz.eu-central-1.rds.amazonaws.com',
     }
 }
 
@@ -194,7 +193,7 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 20,
 }
 
-APPEND_SLASH=False
+APPEND_SLASH = False
 # Tell Django about the custom `User` model we created. The string
 # `authentication.User` tells Django we are referring to the `User` model in
 # the `authentication` module. This module is registered above in a setting
@@ -216,4 +215,3 @@ STATICFILES_STORAGE = 'storages.backends.s3boto3.S3StaticStorage'
 BRAINTREE_MERCHANT_ID = 'w9j366qh6jprqfqz'
 BRAINTREE_PUBLIC_KEY = 'r9zcny82gsp4byhn'
 BRAINTREE_PRIVATE_KEY = '8c28b845a74b8cb21435a4adf0949f49'
-
