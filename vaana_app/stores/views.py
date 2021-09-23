@@ -1,3 +1,4 @@
+import requests
 from rest_framework.decorators import permission_classes
 from rest_framework.generics import ListAPIView, RetrieveUpdateAPIView
 from rest_framework.pagination import PageNumberPagination
@@ -181,6 +182,24 @@ class SellerStoreAPIView(APIView):
 
         return paginator.get_paginated_response(serializer.data)
 
+class RegionStoreAPIView(APIView):
+    @csrf_exempt
+    def get(self, request, *args, **kwargs):
+        countries = requests.get('https://restcountries.com/v3/all')
+        response = {
+            'body': {
+                'error': 'bad response from api'
+            },
+            'status': status.HTTP_502_BAD_GATEWAY
+        }
+
+        # for country in countries:
+
+        if countries.status_code == 200:
+            response['body'] = countries.json()
+            response['status'] = status.HTTP_200_OK
+            
+        return JsonResponse(response['body'], safe=False, status=response['status'])
 
 class StoreReviewsAPIView(APIView):
     serializer_class = StoreReviewSerializer
