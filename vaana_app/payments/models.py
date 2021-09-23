@@ -18,3 +18,33 @@ class PaymentModel(TimestampedModel):
         (DONE, "done")
     ]
     status = models.CharField(max_length=100, default=OPEN, choices=STATUS)
+
+class CreditCard(TimestampedModel):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    card_number = models.IntegerField()
+    card_name = models.CharField(max_length=255)
+    cvc = models.CharField(max_length=3)
+    expiration_date = models.DateField()
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, blank=True)
+
+    def update(self, data):
+        self.card_number = data['card_number']
+        self.card_name = data['card_name']
+        self.cvc = data['cvc']
+        self.expiration_date = data['expiration_date']
+
+        return self.save()
+
+class BankAccount(TimestampedModel):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, blank=True)
+    bic = models.CharField(max_length=255)
+    iban = models.CharField(max_length=255)
+    account_name = models.CharField(max_length=255)
+
+    def update(self, data):
+        self.bic = data['bic']
+        self.iban = data['iban']
+        self.account_name = data['account_name']
+
+        return self.save()

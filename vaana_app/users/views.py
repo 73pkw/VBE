@@ -137,7 +137,7 @@ class RegistrationAPIView(APIView):
         serializer.is_valid(raise_exception=True)
         address_data = user['address']
         address = Address.objects.create(country=address_data['country'], state=address_data['state'], street=address_data['street'], zipcode=address_data['zipcode'])
-        user = User.objects.create_user(username=user['username'], email=user['email'], password=user['password'], account_type=user['account_type'], gender=user['gender'], address=address)
+        user = User.objects.create_user(username=user['username'], email=user['email'], password=user['password'], fullname=user['fullname'], account_type=user['account_type'], gender=user['gender'], address=address)
         """ addressSerializer = self.addressSerializer(data=address)
         addressSerializer.is_valid(raise_exception=True)
         serializer.data.address = addressSerializer.data
@@ -299,6 +299,7 @@ class UserRetrieveUpdateAPIView(RetrieveUpdateAPIView):
         serializer_data = {
             'username': user_data.get('username', request.user.username),
             'email': user_data.get('email', request.user.email),
+            'fullname': user_data.get('fullname', request.user.fullname),
             'account_type': user_data.get('account_type', request.user.account_type),
             'gender': user_data.get('gender', request.user.gender),
         }
