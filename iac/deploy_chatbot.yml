@@ -97,5 +97,5 @@
 
     - name: Run Image
       shell: |
-        docker run -d -p 8082:8020 --name vaanah_chatbot terinnova/vaanah-chatbot:v1.0
+        docker run -d -p 8090:8000 --name vaanah_chatbot terinnova/vaanah-chatbot:v1.0
       become: yes
