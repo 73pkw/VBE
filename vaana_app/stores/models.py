@@ -9,6 +9,7 @@ class Store(TimestampedModel):
     name = models.CharField(max_length=255, unique=True)
     created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, blank=True)
     address = models.ForeignKey(Address, on_delete=models.CASCADE, null=True, blank=True)
+    region = models.CharField(max_length=255, null=True, blank=True)
     is_active = models.BooleanField()
     image = models.CharField(max_length=255, null=True, blank=True)
 
