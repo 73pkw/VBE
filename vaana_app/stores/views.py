@@ -1,3 +1,4 @@
+import requests
 from addresses.models import Address
 from addresses.serializers import AddressSerializer
 from rest_framework.decorators import permission_classes
@@ -77,6 +78,7 @@ class StoreAPIView(APIView):
                 store = Store.objects.create(
                     name=payload["name"],
                     created_by=user,
+                    region= payload["region"],
                     is_active= payload["is_active"],
                     image= payload['image'],
                     address=address
@@ -155,6 +157,7 @@ class StoreUpdateDeleteAPIView(RetrieveUpdateAPIView):
             #     updated_at=now()
             # )
             store.name = payload['name']
+            store.region = payload['region']
             store.is_active = payload['is_active']
             store.image = payload['image']
             store.save()
@@ -205,6 +208,16 @@ class SellerStoreAPIView(APIView):
 
         return paginator.get_paginated_response(serializer.data)
 
+class RegionStoreAPIView(APIView):
+    @csrf_exempt
+    def get(self, request, region):
+        stores = Store.objects.filter(region=region)
+        paginator = PageNumberPagination()
+        paginator.page_size = 20        
+        page = paginator.paginate_queryset(stores, request)
+        serializer = StoreResponseSerializer(page, many=True)
+
+        return paginator.get_paginated_response(serializer.data)
 
 class StoreReviewsAPIView(APIView):
     serializer_class = StoreReviewSerializer
