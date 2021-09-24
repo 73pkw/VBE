@@ -78,6 +78,7 @@ class StoreAPIView(APIView):
                 store = Store.objects.create(
                     name=payload["name"],
                     created_by=user,
+                    region= payload["region"],
                     is_active= payload["is_active"],
                     image= payload['image'],
                     address=address
@@ -156,6 +157,7 @@ class StoreUpdateDeleteAPIView(RetrieveUpdateAPIView):
             #     updated_at=now()
             # )
             store.name = payload['name']
+            store.region = payload['region']
             store.is_active = payload['is_active']
             store.image = payload['image']
             store.save()
