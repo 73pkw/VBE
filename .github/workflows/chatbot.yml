@@ -1,0 +1,74 @@
+name: CICD Vaanah-Backend
+
+# on:
+#   push:
+#     branches:
+#       - main
+
+jobs:
+  build-and-deploy:
+    name: Chatbot Build and Deploy
+    runs-on: ubuntu-latest
+    steps:
+      # Check status
+      - name: Check commit status
+        id: commit-status
+        run: |
+          # Check the status of the Git commit
+          CURRENT_STATUS=$(curl --url https://api.github.com/vaanah/${{ github.repository }}/commits/${{ github.sha }}/status --header 'authorization: Bearer ${{ secrets.PERSONAL_ACCESS_TOKEN }}' | jq -r '.state');
+          echo "Current status is: $CURRENT_STATUS"
+          while [ "${CURRENT_STATUS^^}" = "PENDING" ];
+            do sleep 10;
+            CURRENT_STATUS=$(curl --url https://api.github.com/vaanah/${{ github.repository }}/commits/${{ github.sha }}/status --header 'authorization: Bearer ${{ secrets.PERSONAL_ACCESS_TOKEN }}' | jq -r '.state');
+          done;
+          echo "Current status is: $CURRENT_STATUS"
+          if [ "${CURRENT_STATUS^^}" = "FAILURE" ];
+            then echo "Commit status failed. Canceling execution";
+            exit 1;
+          fi
+      # Checkout Commit
+      - name: Checkout
+        uses: actions/checkout@v1
+
+      # Cache Memory
+      - name: Cache Docker layers
+        uses: actions/cache@v2
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-
+      # Login to DockerHub
+      - name: Login to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+
+      # Docker Build and Push
+      - name: Build and push
+        id: docker_build
+        uses: docker/build-push-action@v2
+        with:
+          context: ./chatbot
+          file: ./chatbot/Dockerfile
+          builder: ${{ steps.buildx.outputs.name }}
+          push: true
+          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/vaanah-chatbot:v1.0
+          # cache-from: type=local,src=/tmp/.buildx-cache
+          # cache-to: type=local,dest=/tmp/.buildx-cache
+
+      - name: Image digest
+        run: echo ${{ steps.docker_build.outputs.digest }}
+
+      # Deploy to staging with Ansible Playbook
+      - name: Play Ansible Playbook
+        uses: arillso/action.playbook@master
+        with:
+          playbook: iac/deploy_chatbot.yml
+          inventory: iac/hosts
+          private_key: ${{ secrets.SSH_PRIVATE_KEY }}
+        #         galaxy_file: tests/requirements.yml
+        env:
+          ANSIBLE_HOST_KEY_CHECKING: "false"
+          ANSIBLE_DEPRECATION_WARNINGS: "false"
