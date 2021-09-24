@@ -76,10 +76,10 @@
         name: docker
 
     # change vaanah_test3 to vaanah_back-new
-    # - name: Kill Previous container
-    #   shell: |
-    #     docker kill vaanah_chatbot
-    #   become: yes
+    - name: Kill Previous container
+      shell: |
+        docker kill vaanah_chatbot
+      become: yes
 
     - name: Prune container
       docker_prune:
