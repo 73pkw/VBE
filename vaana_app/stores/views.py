@@ -210,24 +210,14 @@ class SellerStoreAPIView(APIView):
 
 class RegionStoreAPIView(APIView):
     @csrf_exempt
-    def get(self, request, country):
-        countries = requests.get('https://restcountries.com/v3/all')
-        response = {
-            'body': {
-                'error': 'bad response from api'
-            },
-            'status': status.HTTP_502_BAD_GATEWAY
-        }
+    def get(self, request, region):
+        stores = Store.objects.filter(region=region)
+        paginator = PageNumberPagination()
+        paginator.page_size = 20        
+        page = paginator.paginate_queryset(stores, request)
+        serializer = StoreResponseSerializer(page, many=True)
 
-        if countries.status_code == 200:
-            for country in countries:
-                if country.name == country:
-                    region = country.region
-            print(region)
-            response['body'] = countries.json()
-            response['status'] = status.HTTP_200_OK
-            
-        return JsonResponse(response['body'], safe=False, status=response['status'])
+        return paginator.get_paginated_response(serializer.data)
 
 class StoreReviewsAPIView(APIView):
     serializer_class = StoreReviewSerializer
