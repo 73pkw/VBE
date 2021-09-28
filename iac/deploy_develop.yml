@@ -97,5 +97,5 @@
 
     - name: Run Image
       shell: |
-        docker run -d -p 8082:8020 --name vaanah_back_develop terinnova/vaanah-django-develop:v1.5.3
+        docker run -d -p 8072:8020 --name vaanah_back_develop terinnova/vaanah-django-develop:v1.5.3
       become: yes
