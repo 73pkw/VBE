@@ -10,8 +10,8 @@
           "What is your you name ?"
         ],
         "answers": [
-          { "answer": "You can call me Sam" },
-          { "answer": "I prefer to be called Phil"}
+          { "answer": "You can call me Vaanel" },
+          { "answer": "I prefer to be called Robota"}
         ]
       },
       {
@@ -62,7 +62,8 @@
           "I hate chatbots actually so please could you get out of my screen and connect me to someone made from flesh thanks"
         ],
         "answers": [
-          { "answer": "Yes of course" }
+          { "answer": "Yes of course" },
+          { "answer": "Yes of course, <br>wait a few minute please i am calling Teddy..." }
   
         ]
       },
@@ -72,10 +73,11 @@
           "start",
           "help",
           "vaanah details",
-          "vaanah"
+          "vaanah description",
+          "good"
         ],
         "answers": [
-          { "answer": "What can i do for you ?" }
+          { "answer": "Vaanah is a e-commerce plateforme..., <br> What can i do for you ?" }
         ]
       },
       {
@@ -100,7 +102,7 @@
           "How much do I have to pay?"
         ],
         "answers": [
-          { "answer": "Check out our pricing by the link:\nhttps://stormotion.io/"}
+          { "answer": "Check out our pricing by <br>the link: https://stormotion.io/"}
         ]
       },
       {
@@ -142,22 +144,21 @@
           "how can i receive your newsletter ?"
         ],
         "answers": [
-          { "answer": "For receive our notification, please What is your email ?"} 
+          { "answer": "For receive our notifications,<br> please What is your email ?"} 
         ]
        
       },
       {
-        "intent": "user.book",
+        "intent": "user.service",
         "utterances": [
-          "I'd like to book an appointment",
-          "I wanna see the doc",
-          "Can I see the doctor?",
-          "When is the doctor available?",
-          "I want some help with my knee",
-          "I want to see @doctor",
-          "I'd like to visit @doctor",
-          "Is @doctor available?",
-          "another reservation pls"
+          "What service have you ?",
+          "List me your service",
+          "I want to know all your service",
+          "Services",
+          "what up ?"
+        ],
+        "answers": [
+          { "answer": "Vaanah is a e-commerce plateforme. <br> - I can register you on our newsletter <br> - I can compair the price for you <br> - I have a response at all questions"} 
         ]
       }
     ],
