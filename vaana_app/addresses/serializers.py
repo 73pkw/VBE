@@ -11,4 +11,6 @@ class AddressSerializer(serializers.ModelSerializer):
             "state",
             "street",
             "zipcode",
+            'phone',
+            'city'
         ]
