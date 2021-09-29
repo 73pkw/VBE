@@ -1,3 +1,4 @@
+from addresses.models import Address
 from django.db import models
 from django.conf import settings
 from cores.models import TimestampedModel
@@ -7,7 +8,8 @@ class Store(TimestampedModel):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=255, unique=True)
     created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, blank=True)
-    store_address = models.CharField(max_length=100)
+    address = models.ForeignKey(Address, on_delete=models.CASCADE, null=True, blank=True)
+    region = models.CharField(max_length=255, null=True, blank=True)
     is_active = models.BooleanField()
     image = models.CharField(max_length=255, null=True, blank=True)
 

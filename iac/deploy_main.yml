@@ -1,0 +1,101 @@
+---
+- hosts: backendserver
+  vars:
+    ansible_user: ubuntu
+
+  tasks:
+    ##### provision brand new ubuntu 20.04 server
+
+    # ...
+
+    ##### setup group and user
+
+    - name: Create docker group
+      become: true
+      group:
+        name: docker
+        state: present
+
+    - name: Add user to group
+      become: true
+      user:
+        name: "{{ansible_user}}"
+        groups: docker
+        append: true
+
+    #    - meta: reset_connection                # <--- must do this if using pipelining
+
+    ##### setup docker
+
+    - name: Install packages required by docker
+      become: true
+      apt:
+        update_cache: yes
+        state: latest
+        name:
+          - apt-transport-https
+          - ca-certificates
+          - curl
+          - gpg-agent
+          - software-properties-common
+
+    - name: Add docker GPG key
+      become: true
+      apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        state: present
+
+    - name: Add docker apt repo
+      become: true
+      apt_repository:
+        repo: deb https://download.docker.com/linux/ubuntu bionic stable
+        state: present
+
+    - name: Install docker
+      become: true
+      apt:
+        update_cache: yes
+        state: latest
+        name:
+          - docker-ce
+          - docker-ce-cli
+          - containerd.io
+
+    ##### setup ansible <---> docker
+
+    - name: Install python dependencies
+      become: true
+      apt:
+        update_cache: yes
+        state: latest
+        name: python3-pip
+
+    - name: Install 'Docker SDK for Python'
+      #become: true               <--- DO NOT DO THIS!!!/
+      pip:
+        name: docker
+
+    # change vaanah_test3 to vaanah_back-new
+    - name: Kill Previous container
+      shell: |
+        docker kill vaanah_back
+      become: yes
+
+    - name: Prune container
+      docker_prune:
+        containers: yes
+        images: yes
+        images_filters:
+          dangling: false
+        volumes: yes
+        builder_cache: yes
+
+    - name: Pull Backend app locally
+      shell: |
+        docker pull terinnova/vaanah-django:v1.5.3
+      become: yes
+
+    - name: Run Image
+      shell: |
+        docker run -d -p 8082:8020 --name vaanah_back terinnova/vaanah-django:v1.5.3
+      become: yes
