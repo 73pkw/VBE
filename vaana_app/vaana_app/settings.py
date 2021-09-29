@@ -126,7 +126,7 @@ WSGI_APPLICATION = 'vaana_app.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'release2.2',
+        'NAME': 'release2.2.1-beta',
         'USER': 'vaanah_user',
         'PASSWORD': 'secretsecret',
         'HOST': 'vaanahdb.cvamgenajfwz.eu-central-1.rds.amazonaws.com',
@@ -215,4 +215,3 @@ STATICFILES_STORAGE = 'storages.backends.s3boto3.S3StaticStorage'
 BRAINTREE_MERCHANT_ID = '6z2mmdkfhmxkzctx'
 BRAINTREE_PUBLIC_KEY = '5z64y558ztbfjcgz'
 BRAINTREE_PRIVATE_KEY = '1730b822bad8366e778a724f83c3dd68'
-
