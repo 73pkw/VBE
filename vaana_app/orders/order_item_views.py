@@ -1,3 +1,4 @@
+from orders.models import OrderItem
 from django.core.exceptions import ObjectDoesNotExist
 from rest_framework.decorators import permission_classes
 from rest_framework.permissions import IsAuthenticated
@@ -7,52 +8,23 @@ from rest_framework import status
 import json
 from rest_framework.views import APIView
 from rest_framework.generics import RetrieveUpdateAPIView
-from .serializers import OrderDetailsSerializer, OrderSerializer, OrderItemSerializer
-from carts.models import Cart
-from .models import Order, OrderItem
-from .backends import OrderBackends
+from .backends import OrderItemBackend
+from shippings.models import Shipment
 
-class OrderInitiateAPIView(APIView):
+class OrderItemShipmentAPIView(APIView):
     @csrf_exempt
     @permission_classes([IsAuthenticated])
-    def post(self, request, *args, **kwargs):
+    def post(self, request, order_item_id, *args, **kwargs):
         user = request.user
-        payload = json.loads(request.body)
-        payload['user'] = user.id
-        serializer = OrderSerializer(data=payload)
-        serializer.is_valid(raise_exception=True)
-        try:
-            serializer.save()
-            data = serializer.data
-            cart = Cart.objects.get(id=data['cart'])
-            order = Order.objects.get(id=data['id'])
-            backend = OrderBackends()
-            order_items = backend.createOrderItems1(order=order, cart=cart)
-            response = {
-                'body': OrderDetailsSerializer(order).data,
-                'status': status.HTTP_201_CREATED
-            }
-        except Exception as e:
-            response = {
-                'body': str(e),
-                'status': status.HTTP_500_INTERNAL_SERVER_ERROR
-            }
-
-        return JsonResponse(response['body'], status=response['status'], safe=False)
-
-class OrderItemRetrieveUpdateAPIVIew(RetrieveUpdateAPIView):
-    @csrf_exempt
-    @permission_classes([IsAuthenticated])
-    def put(self, request, order_item_id):
-        user = request.user
-        payload = json.loads(request.body)
-        
         try:
             order_item = OrderItem.objects.get(id=order_item_id)
-            order_item.update(data=payload)
+            backend = OrderItemBackend()
+            apiResponse = backend.createShipment(orderItem=order_item)
+            order_item.shipment = Shipment.objects.get(id=apiResponse['id'])
+            order_item.save()
             response = {
-                'body': OrderItemSerializer(order_item).data,
-                'status': status.HTTP_200_OK
+                'body': apiResponse,
+                'status': status.HTTP_201_CREATED
             }
         except ObjectDoesNotExist:
             response = {
@@ -66,4 +38,32 @@ class OrderItemRetrieveUpdateAPIVIew(RetrieveUpdateAPIView):
             }
 
         return JsonResponse(response['body'], status=response['status'], safe=False)
-        
+
+class OrderItemTransactionAPIView(APIView):
+    @csrf_exempt
+    @permission_classes([IsAuthenticated])
+    def post(self, request, order_item_id, *args, **kwargs):
+        user = request.user
+        try:
+            order_item = OrderItem.objects.get(id=order_item_id, seller=user)
+            backend = OrderItemBackend()
+            apiResponse = backend.createTransaction(orderItem=order_item)
+            order_item.number = apiResponse['tracking_number']
+            order_item.shipping_tax = apiResponse['rate']['amount']
+            order_item.save()
+            response = {
+                'body': apiResponse,
+                'status': status.HTTP_201_CREATED
+            }
+        except ObjectDoesNotExist:
+            response = {
+                'body': 'Order item not found',
+                'status': status.HTTP_404_NOT_FOUND
+            }
+        except Exception as e:
+            response = {
+                'body': str(e),
+                'status': status.HTTP_500_INTERNAL_SERVER_ERROR
+            }
+
+        return JsonResponse(response['body'], status=response['status'], safe=False)

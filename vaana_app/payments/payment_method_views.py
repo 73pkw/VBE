@@ -7,8 +7,8 @@ from rest_framework import serializers, status
 import json
 from rest_framework.views import APIView
 from rest_framework.generics import RetrieveUpdateAPIView
-from .serializers import CreditCardSerializer, BankAccountSerializer
-from .models import CreditCard, BankAccount
+from .serializers import CreditCardSerializer, BankAccountSerializer, PaymentMethodSerializer
+from .models import CreditCard, BankAccount, PaymentMethod
 
 class CreditCardAPIView(APIView):
     @csrf_exempt
@@ -252,3 +252,58 @@ class BankAccountRetrieveUpdateAPIView(RetrieveUpdateAPIView):
             }
 
         return JsonResponse(response['body'], status=response['status'], safe=False)
+
+class PaymentMethodAPIView(APIView):
+    @csrf_exempt
+    @permission_classes([IsAuthenticated])
+    def post(self, request, *args, **kwargs):
+        user = request.user
+        payload = json.loads(request.body)
+        payload['user'] = user.id
+        serializer = PaymentMethodSerializer(data=payload)
+        serializer.is_valid(raise_exception=True)
+
+        try:
+            serializer.save()
+            response = {
+                'body': serializer.data,
+                'status': status.HTTP_201_CREATED
+            }
+        except Exception as e:
+            response = {
+                'body': str(e),
+                'status': status.HTTP_500_INTERNAL_SERVER_ERROR
+            }
+
+        return JsonResponse(response['body'], status=response['status'], safe=False)
+
+class PaymentMethodRetrieveUpdateAPIView(RetrieveUpdateAPIView):
+    @csrf_exempt
+    @permission_classes([IsAuthenticated])
+    def put(self, request, payment_method_id):
+        user = request.user
+        payload = json.loads(request.body)
+        payload['user'] = user.id
+        serializer = PaymentMethodSerializer(data=payload)
+        serializer.is_valid(raise_exception=True)
+        
+        try:
+            paymentMethod = PaymentMethod.objects.get(id=payment_method_id, user=user)
+            paymentMethod.update(payload)
+            response = {
+                'body': PaymentMethodSerializer(paymentMethod).data,
+                'status': status.HTTP_201_CREATED
+            }
+        except ObjectDoesNotExist:
+            response = {
+                'body': 'Payment method not found',
+                'status': status.HTTP_404_NOT_FOUND
+            }
+        except Exception as e:
+            response = {
+                'body': str(e),
+                'status': status.HTTP_500_INTERNAL_SERVER_ERROR
+            }
+
+        return JsonResponse(response['body'], status=response['status'], safe=False)
+

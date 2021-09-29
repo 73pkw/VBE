@@ -1,10 +1,12 @@
 import braintree
 from django.conf import settings
-from .models import PaymentModel
+import stripe
+from .models import Payment, PaymentModel
 from cores.utils import *
 from funds.backends import FundController
 from wallets.backends import WalletController
 from orders.models import Order, OrderItem
+from orders.serializers import OrderDetailsSerializer
 
 gateway = braintree.BraintreeGateway(
     braintree.Configuration(
@@ -15,18 +17,19 @@ gateway = braintree.BraintreeGateway(
     )
 )
 
+stripe.api_key = settings.STRIPE_SECRET_KEY
+
 class BraintreeAPI(object):
     def get_client_token(self):
         return gateway.client_token.generate()
 
-    def transaction_sale(self, data, user=None):
+    def transaction_sale(self, data, user):
         return gateway.transaction.sale({
             "amount": data['amount'],
             "payment_method_nonce": data['nonce'],
             "device_data": data['device_data'] if 'device_data' in data else None,
             "customer":{
-                "email": 'alioune.kanoute@terinnova.com'
-                #user.email,
+                "email": user.email,
             },
             "options": {
                 "submit_for_settlement": True
@@ -47,10 +50,34 @@ class BraintreeAPI(object):
             'status': transaction.status,
         }
 
+class StripeAPI(object):
+
+    def getPaymentIntent(self, user, data, order):
+        customer = stripe.Customer.create(
+                name=user.username,
+                email=user.email
+            )
+        intent = stripe.PaymentIntent.create(
+            payment_method_types=[data['method']],
+            amount = data['amount'] * 100,
+            currency = data['currency'],
+            customer=customer.id,
+            metadata={
+                "order": order.id
+            },
+            receipt_email=user.email
+        )
+
+        return intent
+
+    def retrievePaymentIntent(self, payment_intent_id):
+
+        return stripe.PaymentIntent.retrieve(payment_intent_id)
+
 class PaymentBackend(object):
     def create(self, data):
-        return PaymentModel.objects.create(
-            order_number=data['order_number'],
+        return Payment.objects.create(
+            order=data['order'],
             method=data['method'],
             amount=data['amount'],
             currency=data['currency'],
@@ -60,28 +87,25 @@ class PaymentBackend(object):
     def updateOrderItemStatus(self, order, status, payment_intent_id):
         items = OrderItem.objects.filter(order=order)
         for item in items:
-            item.payment_intent_id = payment_intent_id
+            item.transaction_id = payment_intent_id
             item.status = status
             item.save()
 
-    def updateProductsQuantity(self, cart, payment, payment_intent_id):
-        for item in cart.items.all():
-            try:
-                product = item.product
-                product.quantity = product.quantity - item.quantity
-                product.save()
-                wallet = WalletController().get(product.created_by)
-                FundController().create((product.price * item.quantity), 'EUR', cart.owner, payment, wallet, payment_intent_id, product)
-                email_data = {
-                    'email_body': str(item.quantity) + ' of your  product ' + product.name + ' have been ordered',
-                    'to_email': product.created_by.email,
-                    'email_subject': 'Product ordered'
-                    }
-                send_email(email_data)
-            except Exception as e:
-                print(str(e))
-                pass
+    def updateProductsQuantity(self, order, payment, transaction_id):
+        items = OrderItem.objects.filter(order=order)
+        for item in items:
+            product = item.cart_item.product
+            product.quantity = product.quantity - item.cart_item.quantity
+            product.save()
+            wallet = WalletController().get(product.created_by)
+            FundController().create((product.price * item.cart_item.quantity), 'EUR', order.user, payment, wallet, transaction_id, product)
+            email_data = {
+                'email_body': str(item.cart_item.quantity) + ' of your  product ' + product.name + ' have been ordered',
+                'to_email': product.created_by.email,
+                'email_subject': 'Product ordered'
+                }
+            send_email(email_data)
 
-    def sendOrderConfirmation(self, order, user):
-        email_data = {'email_body': 'Your order ' + order.number + ' has been confirmed.', 'to_email': user.email, 'email_subject': 'Order confirmed'}
+    def sendOrderConfirmation(self, user):
+        email_data = {'email_body': 'Your order has been confirmed.', 'to_email': user.email, 'email_subject': 'Order confirmed'}
         send_email(email_data)

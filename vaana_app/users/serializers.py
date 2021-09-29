@@ -1,3 +1,4 @@
+from os import read
 from re import T, U
 from django.contrib.auth import authenticate
 
@@ -73,7 +74,7 @@ class LoginSerializer(serializers.Serializer):
     email = serializers.CharField(max_length=255)
     username = serializers.CharField(max_length=255, read_only=True)
     password = serializers.CharField(max_length=128, write_only=True)
-    fullname = serializers.CharField(max_length=255, write_only=True)
+    fullname = serializers.CharField(max_length=255, read_only=True)
     token = serializers.CharField(max_length=255, read_only=True)
 
     # is_verified = serializers.BooleanField(read_only=True)

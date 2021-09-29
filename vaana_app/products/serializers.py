@@ -98,5 +98,6 @@ class ProductResponseSerializer(serializers.ModelSerializer):
             "updated_at",
             "store",
             "reviews",
+            "parcel",
         ]
 
