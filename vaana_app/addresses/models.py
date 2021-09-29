@@ -8,3 +8,5 @@ class Address(TimestampedModel):
     zipcode = models.CharField(max_length=64, blank=True)
     country = models.CharField(max_length=255)
     street = models.CharField(max_length=255)
+    city = models.CharField(max_length=255, default=None, null=True, blank=True)
+    phone = models.CharField(max_length=255, default=None, null=True, blank=True)
