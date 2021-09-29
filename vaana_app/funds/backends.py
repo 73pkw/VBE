@@ -9,7 +9,7 @@ class FundController(object):
             customer=customer,
             payment=payment,
             wallet=wallet,
-            payment_intent_id=payment_intent_id,
+            transaction_id=payment_intent_id,
             product=product
         )
 

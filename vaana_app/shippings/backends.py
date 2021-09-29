@@ -52,7 +52,7 @@ class ShippoShipmentAPI(object):
             "state": address['state'],
             "zip": address['zip_code'],
             "country": address['country'],
-            "phone": address['phone'],
+            "phone": address['phone'] if 'phone' in address else '',
             "email": address['email'],
         }
 
@@ -85,18 +85,18 @@ class ShippoShipmentAPI(object):
 
 class ShippoTransactionAPI(object):
     def create(self, transaction):
-        shippoShipmentApi = ShippoShipmentAPI()
+        # shippoShipmentApi = ShippoShipmentAPI()
         shipment = transaction['shipment']
-        parcels = []
+        ''' parcels = []
         for i in shipment['parcels']:
             parcels.append(shippoShipmentApi.getParcelObjectForApi(i))
         address_from=shippoShipmentApi.getAddressObjectForApi(shipment['address_from'])
-        address_to=shippoShipmentApi.getAddressObjectForApi(shipment['address_to'])
+        address_to=shippoShipmentApi.getAddressObjectForApi(shipment['address_to']) '''
         return shippo.Transaction.create(
             shipment={
-                'address_from': address_from,
-                'address_to': address_to,
-                'parcels': parcels
+                'address_from': shipment['address_from'],
+                'address_to': shipment['address_to'],
+                'parcels': shipment['parcels']
             },
             servicelevel_token=transaction['carrier_account'],
             carrier_account=transaction['servicelevel_token'],

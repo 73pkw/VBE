@@ -23,7 +23,7 @@ class ParcelAPIVIew(APIView):
         try:
             product = Product.objects.get(id=product_id, created_by=user)
             serializer.save()
-            product.parcel = serializer.data['id']
+            product.parcel = Parcel.objects.get(id=serializer.data['id'])
             product.save()
             response = {
                 'body': serializer.data,

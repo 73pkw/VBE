@@ -1,31 +1,33 @@
 from rest_framework import fields, serializers
-from .models import BankAccount, CreditCard, PaymentModel
+from .models import BankAccount, CreditCard, Payment, PaymentMethod, PaymentModel
 
 class PaymentSerializer(serializers.ModelSerializer):
     class Meta:
-        model = PaymentModel
+        model = Payment
         fields = [
             "id",
-            "order_number",
+            "order",
             "method",
             "amount",
             "currency",
-            "created_at"
+            "created_at",
+            'user'
         ]
 
+
 class StripePaymentIntentConfirmSerializer(serializers.Serializer):
-    order_number = serializers.CharField(max_length=255)
+    order = serializers.CharField(max_length=255)
 
     def validate(self, attrs):
-        order_number = attrs.get('order_number', None)
+        order = attrs.get('order', None)
         
-        if order_number is None:
+        if order is None:
             raise serializers.ValidationError(
-                'order_number field is required'
+                'order field is required'
             )
 
         return {
-            'order_number' : order_number
+            'order' : order
         }
 
 class BraintreeTransactionSerializer(serializers.Serializer):
@@ -61,4 +63,15 @@ class BankAccountSerializer(serializers.ModelSerializer):
             'iban',
             'account_name',
             'user',
+        ]
+
+class PaymentMethodSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PaymentMethod
+        fields = [
+            'id',
+            'method',
+            'card',
+            'bank_account',
+            'user'
         ]
