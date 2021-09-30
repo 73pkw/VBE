@@ -70,12 +70,12 @@ class OrderItemBackend(object):
         data = {
             'company': seller.username,
             'name': seller.username,
-            'state': 'CA', #seller.address.state,
-            'street1': '215 Clayton St.',#seller.address.street,
-            'zip_code': '94117', #seller.address.zipcode,
-            'country': 'US', #seller.address.country,
-            'city': 'San Francisco',#seller.address.state,
-            'phone': '+1 555 341 9393',
+            'state': seller.address.state,
+            'street1': seller.address.street,
+            'zip_code': seller.address.zipcode,
+            'country': seller.address.country,
+            'city': seller.address.state,
+            'phone': seller.address.phone,
             'email': seller.email,
             'user': seller.id
         }
@@ -127,16 +127,18 @@ class OrderItemBackend(object):
         shipment = shippo.Shipment.retrieve(orderItem.shipment.object_id)
         carrier_account = orderItem.shipment.carrier_account
         servicelevel_token = orderItem.shipment.servicelevel_token
+        rate = orderItem.shipment.rate
         ''' address_from = orderItem.shipment.address_from
         address_to = orderItem.shipment.address_to '''
         data = {
+            'rate': rate,
             'shipment': {
                 'parcels': shipment['parcels'],
                 'address_from': shipment['address_from'],
                 'address_to': shipment['address_to'],
             },
-            'carrier_account': carrier_account,
-            'servicelevel_token': servicelevel_token
+            'carrier_account': '0a4365b4fca142e1b30d43de5cf80351',#carrier_account,
+            'servicelevel_token': 'shippo_ups_account'#servicelevel_token
         }
         transactionAPI = ShippoTransactionAPI()
 

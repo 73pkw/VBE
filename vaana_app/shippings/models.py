@@ -49,10 +49,12 @@ class Shipment(TimestampedModel):
     parcels = models.ManyToManyField(Parcel)
     carrier_account = models.CharField(max_length=255, null=True, blank=True)
     servicelevel_token = models.CharField(max_length=255, null=True, blank=True)
+    rate = models.CharField(max_length=255, blank=True, null=True, default=None)
 
     def update(self, data):
-        self.carrier_account = data['carrier_account'] if 'carrier_account' in data else None
-        self.servicelevel_token = data['servicelevel_token'] if 'servicelevel_token' in data else None
+        self.carrier_account = data['carrier_account'] if 'carrier_account' in data else self.carrier_account
+        self.servicelevel_token = data['servicelevel_token'] if 'servicelevel_token' in data else self.servicelevel_token
+        self.rate = data['rate'] if 'rate' in data else self.rate
         return self.save()
         
 

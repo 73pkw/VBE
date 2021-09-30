@@ -136,7 +136,10 @@ class RegistrationAPIView(APIView):
         serializer = self.serializer_class(data=user)
         serializer.is_valid(raise_exception=True)
         address_data = user['address']
-        address = Address.objects.create(country=address_data['country'], state=address_data['state'], street=address_data['street'], zipcode=address_data['zipcode'])
+        addressSerializer = self.addressSerializer(data=address_data)
+        addressSerializer.is_valid(raise_exception=True)
+        addressSerializer.save()
+        address = Address.objects.get(id=addressSerializer.data['id'])
         user = User.objects.create_user(
             username=user['username'], 
             email=user['email'], 
