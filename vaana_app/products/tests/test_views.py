@@ -6,6 +6,7 @@ from categories.models import Category
 
 from django.test import TestCase
 import uuid
+from addresses.models import Address
 
 class ProductTest(TestCase):
 
@@ -28,7 +29,12 @@ class ProductTest(TestCase):
             ),
             store = Store.objects.create(name = "Shop",
                             created_by = self.user,
-                            store_address = "Lorem ipsum ",
+                            address = Address.objects.create(
+                                state = "Foods",
+                                zipcode = "foods",
+                                country = "Lorem ipsum dolor, sit amet consectetur adipisicing elit.",
+                                street = "True",
+                            ),                             
                             is_active = "True"
                         ),
             # image = "test",
