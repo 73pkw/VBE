@@ -177,3 +177,12 @@ class User(AbstractBaseUser, PermissionsMixin, TimestampedModel):
         }, settings.SECRET_KEY, algorithm='HS256')
 
         return token
+
+    def update(self, data):
+        self.username = data['username'] if 'username' in data else self.username
+        self.email = data['email'] if 'email' in data else self.email
+        self.fullname = data['fullname'] if 'fullname' in data else self.fullname
+        self.account_type = data['account_type'] if 'account_type' in data else self.account_type
+        self.gender = data['gender'] if 'gender' in data else self.gender
+
+        return self.save()

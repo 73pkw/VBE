@@ -143,4 +143,17 @@ class OrderItemBackend(object):
         transactionAPI = ShippoTransactionAPI()
 
         return transactionAPI.create(transaction=data)
+class SellerCustomerBackend(object):
+    def getCustomers(self, orderItems):
+        users = []
+        selected = []
+        for item in orderItems:
+            user = item.order.user
+            if user.id not in selected:
+                selected.append(user.id)
+                users.append({
+                    "username": user.username,
+                    "phone": user.address.phone
+                })
 
+        return users
