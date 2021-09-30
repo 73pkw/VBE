@@ -1,5 +1,5 @@
-from categories.models import Category
 import uuid
+from addresses.models import Address
 from users.models import User
 from django.conf import settings
 from ..models import Store
@@ -10,9 +10,14 @@ class StoreModelTest(TestCase):
         cls.store = Store.objects.create(
             id = uuid.uuid4,
             name = "Foods",
-            address = "Lorem ipsum dolor, sit amet consectetur adipisicing elit.",
             is_active = "True",
-            created_by = User.objects.create(username='user5', email='email5@im.com', password='test')
+            created_by = User.objects.create(username='user5', email='email5@im.com', password='test'),
+            address = Address.objects.create(
+                state = "test",
+                zipcode = "test",
+                country = "test",
+                street = "test",
+            ),
         )
 
     # def test_wrong_store_fields(self):

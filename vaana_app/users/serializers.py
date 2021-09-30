@@ -137,7 +137,6 @@ class LoginSerializer(serializers.Serializer):
             'email': user.email,
             'username': user.username,
             'token': user.token,
-            'fullname': user.fullname,
             'account_type': user.account_type, 
             'gender':user.gender,
             'address':user.address,

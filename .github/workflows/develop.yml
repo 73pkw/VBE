@@ -3,7 +3,7 @@ name: CICD Vaanah-Backend
 on:
   push:
     branches:
-      - main
+      - develop
 
 jobs:
   # Test application Image
@@ -70,7 +70,7 @@ jobs:
           file: ./Dockerfile.django
           builder: ${{ steps.buildx.outputs.name }}
           push: true
-          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/vaanah-django:v1.5.3
+          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/vaanah-django-develop:v1.5.3
           # cache-from: type=local,src=/tmp/.buildx-cache
           # cache-to: type=local,dest=/tmp/.buildx-cache
 
@@ -81,7 +81,7 @@ jobs:
       - name: Play Ansible Playbook
         uses: arillso/action.playbook@master
         with:
-          playbook: iac/deploy_main.yml
+          playbook: iac/deploy_develop.yml
           inventory: iac/hosts
           private_key: ${{ secrets.SSH_PRIVATE_KEY }}
         #         galaxy_file: tests/requirements.yml

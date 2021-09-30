@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 
 import os
 from pathlib import Path
-from datetime  import timedelta
+from datetime import timedelta
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -31,7 +31,7 @@ ALLOWED_HOSTS = ['*']
 CORS_ORIGIN_ALLOW_ALL = True
 
 # smtp email configuration
-EMAIL_BACKEND="django.core.mail.backends.smtp.EmailBackend"
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = 'smtp.ionos.de'
 EMAIL_HOST_USER = 'test.vaanah@kaeyros-analytics.de'
 EMAIL_HOST_PASSWORD = '$Happy.Vaanah$'
@@ -127,6 +127,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'deval_test2',
+        'NAME': 'release2.2.1-beta',
         'USER': 'vaanah_user',
         'PASSWORD': 'secretsecret',
         'HOST': 'vaanahdb.cvamgenajfwz.eu-central-1.rds.amazonaws.com',
@@ -193,19 +194,19 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 20,
 }
 
-APPEND_SLASH=False
+APPEND_SLASH = False
 # Tell Django about the custom `User` model we created. The string
 # `authentication.User` tells Django we are referring to the `User` model in
 # the `authentication` module. This module is registered above in a setting
 # called `INSTALLED_APPS`.
 AUTH_USER_MODEL = 'users.User'
 
-FRONT_URL = 'http://ec2-18-193-203-105.eu-central-1.compute.amazonaws.com:8084/'
+FRONT_URL = 'http://35.157.174.92:8074/'
 STRIPE_PUBLISHABLE_KEY = 'pk_test_51HQ3ZXFunRLoLWctiy0l6VVOeflU8ES2IRjTyY7LL9rEpKedBIfOfKB1BSSftQk4Qmke8HdtRcdmje7R2whuWgTz00U7HXpwjn'
 STRIPE_SECRET_KEY = 'sk_test_51HQ3ZXFunRLoLWctxxpIKhYLudKWPCFsLPQzDgKoR1UZykOkD8CIDkxT2GUrXC5aejGMQkTReqSrOCGGF6sUUBQo00Sz4ugrOQ'
 SHIPPO_API_KEY = 'shippo_test_d88dfb2c748b3c9ea2483bded12428024b5f36e3'
-AWS_ACCESS_KEY_ID = 'AKIASGGMCJQ7GAVB3DVH'
-AWS_SECRET_ACCESS_KEY = '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'
+AWS_ACCESS_KEY_ID = 'AKIASGGMCJQ7FDQ4GSPR'
+AWS_SECRET_ACCESS_KEY = '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'
 AWS_STORAGE_BUCKET_NAME = 'vaanah-s3-media'
 AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}.s3.eu-central-1.amazonaws.com'
 AWS_S3_REGION_NAME = 'eu-central-1'
@@ -215,4 +216,3 @@ STATICFILES_STORAGE = 'storages.backends.s3boto3.S3StaticStorage'
 BRAINTREE_MERCHANT_ID = '6z2mmdkfhmxkzctx'
 BRAINTREE_PUBLIC_KEY = '5z64y558ztbfjcgz'
 BRAINTREE_PRIVATE_KEY = '1730b822bad8366e778a724f83c3dd68'
-

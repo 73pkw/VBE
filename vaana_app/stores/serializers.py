@@ -1,3 +1,4 @@
+from addresses.serializers import AddressSerializer
 from users.serializers import UserSerializer
 from rest_framework import serializers
 from .models import Store, StoreReview
@@ -33,14 +34,16 @@ class StoreReviewSerializer(serializers.ModelSerializer):
         ]
         
 class StoreSerializer(serializers.ModelSerializer):
-   
+    address = AddressSerializer()
+
     class Meta:
         model = Store
         fields = [
             'id', 
             'name', 
             'created_by', 
-            'store_address',
+            'address',
+            "region",
             "is_active",
             "image",
             "rating",
@@ -52,13 +55,16 @@ class StoreSerializer(serializers.ModelSerializer):
 class StoreResponseSerializer(serializers.ModelSerializer):
     products = ProductResponseSerializer(many=True)
     reviews = StoreReviewResultSerializer(many=True)
+    address = AddressSerializer()
+
     class Meta:
         model = Store
         fields = [
             'id', 
             'name', 
             'created_by', 
-            'store_address',
+            'address',
+            "region",
             "is_active",
             "image",
             "rating",
