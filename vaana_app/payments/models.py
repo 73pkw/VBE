@@ -79,7 +79,7 @@ class PaymentMethod(TimestampedModel):
 
     def update(self, data):
         self.method = data['method']
-        self.card = data['card'] if 'card' in data else None
-        self.bank_account = data['bank_account'] if 'bank_account' in data else None
+        self.card = data['card'] if 'card' in data else self.card
+        self.bank_account = data['bank_account'] if 'bank_account' in data else self.bank_account
 
         return self.save()

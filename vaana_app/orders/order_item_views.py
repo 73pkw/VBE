@@ -10,6 +10,8 @@ from rest_framework.views import APIView
 from rest_framework.generics import RetrieveUpdateAPIView
 from .backends import OrderItemBackend
 from shippings.models import Shipment
+import traceback
+from shippings.backends import ShippoRatesAPI
 
 class OrderItemShipmentAPIView(APIView):
     @csrf_exempt
@@ -48,8 +50,11 @@ class OrderItemTransactionAPIView(APIView):
             order_item = OrderItem.objects.get(id=order_item_id, seller=user)
             backend = OrderItemBackend()
             apiResponse = backend.createTransaction(orderItem=order_item)
+            ratesAPI = ShippoRatesAPI()
+            ratesApiResponse = ratesAPI.get_rates(id=apiResponse['rate'])
             order_item.number = apiResponse['tracking_number']
-            order_item.shipping_tax = apiResponse['rate']['amount']
+            if(ratesApiResponse.status_code == 200):
+                order_item.shipping_tax = ratesApiResponse.json()['amount']
             order_item.save()
             response = {
                 'body': apiResponse,
@@ -61,6 +66,7 @@ class OrderItemTransactionAPIView(APIView):
                 'status': status.HTTP_404_NOT_FOUND
             }
         except Exception as e:
+            traceback.print_exc()
             response = {
                 'body': str(e),
                 'status': status.HTTP_500_INTERNAL_SERVER_ERROR
