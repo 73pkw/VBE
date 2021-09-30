@@ -13,10 +13,10 @@ class StoreModelTest(TestCase):
             is_active = "True",
             created_by = User.objects.create(username='user5', email='email5@im.com', password='test'),
             address = Address.objects.create(
-                state = "Foods",
-                zipcode = "foods",
-                country = "Lorem ipsum dolor, sit amet consectetur adipisicing elit.",
-                street = "True",
+                state = "test",
+                zipcode = "test",
+                country = "test",
+                street = "test",
             ),
         )
 

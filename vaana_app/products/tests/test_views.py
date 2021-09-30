@@ -30,10 +30,10 @@ class ProductTest(TestCase):
             store = Store.objects.create(name = "Shop",
                             created_by = self.user,
                             address = Address.objects.create(
-                                state = "Foods",
-                                zipcode = "foods",
-                                country = "Lorem ipsum dolor, sit amet consectetur adipisicing elit.",
-                                street = "True",
+                                state = "test",
+                                zipcode = "test",
+                                country = "test",
+                                street = "test",
                             ),                             
                             is_active = "True"
                         ),
