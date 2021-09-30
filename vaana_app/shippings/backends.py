@@ -9,7 +9,7 @@ shippo.config.api_key = settings.SHIPPO_API_KEY
 class ShippoCarrierAPI(object):
 
     def all(self, page=None):
-        url = 'https://api.goshippo.com/carrier_accounts/'
+        url = 'https://api.goshippo.com/v1/carrier_accounts/'
         params = {
             'page': 1 if page is None else page
         }
@@ -93,13 +93,14 @@ class ShippoTransactionAPI(object):
         address_from=shippoShipmentApi.getAddressObjectForApi(shipment['address_from'])
         address_to=shippoShipmentApi.getAddressObjectForApi(shipment['address_to']) '''
         return shippo.Transaction.create(
-            shipment={
-                'address_from': shipment['address_from'],
-                'address_to': shipment['address_to'],
-                'parcels': shipment['parcels']
-            },
-            servicelevel_token=transaction['carrier_account'],
-            carrier_account=transaction['servicelevel_token'],
+            # shipment={
+            #     'address_from': shipment['address_from'],
+            #     'address_to': shipment['address_to'],
+            #     'parcels': shipment['parcels']
+            # },
+            rate=transaction['rate'],
+            # servicelevel_token=transaction['carrier_account'],
+            # carrier_account=transaction['servicelevel_token'],
             label_file_type='PDF'
         )
 
@@ -132,6 +133,13 @@ class ShippoRatesAPI(object):
             'Authorization': 'ShippoToken ' + settings.SHIPPO_API_KEY
         }
         return requests.get(url=url, params=params, headers=headers)
+
+    def get_rates(self, id):
+        url = 'https://api.goshippo.com/rates/'+id
+        headers = {
+            'Authorization': 'ShippoToken ' + settings.SHIPPO_API_KEY
+        }
+        return requests.get(url=url, headers=headers)
 
 class ShippoTrackingAPI(object):
     def get(self, carrier, tracking_number):

@@ -66,4 +66,26 @@ class OrderItemRetrieveUpdateAPIVIew(RetrieveUpdateAPIView):
             }
 
         return JsonResponse(response['body'], status=response['status'], safe=False)
+
+class GetCustomerOrderAPIView(APIView):
+    @csrf_exempt
+    @permission_classes([IsAuthenticated])
+    def get(self, request, *args, **kwargs):
+        user = request.user
+
+        orders = Order.objects.filter(user=user)
+        serializer = OrderDetailsSerializer(orders, many=True)
+
+        return JsonResponse(serializer.data, status=status.HTTP_200_OK, safe=False)
+
+class GetSellerOrderAPIView(APIView):
+    @csrf_exempt
+    @permission_classes([IsAuthenticated])
+    def get(self, request, *args, **kwargs):
+        user = request.user
+
+        orders = OrderItem.objects.filter(seller=user)
+        serializer = OrderItemSerializer(orders, many=True)
+
+        return JsonResponse(serializer.data, status=status.HTTP_200_OK, safe=False)
         
