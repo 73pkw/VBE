@@ -10,7 +10,7 @@ from rest_framework.generics import RetrieveUpdateAPIView
 from .serializers import OrderDetailsSerializer, OrderSerializer, OrderItemSerializer
 from carts.models import Cart
 from .models import Order, OrderItem
-from .backends import OrderBackends
+from .backends import OrderBackends, SellerCustomerBackend
 
 class OrderInitiateAPIView(APIView):
     @csrf_exempt
@@ -89,3 +89,14 @@ class GetSellerOrderAPIView(APIView):
 
         return JsonResponse(serializer.data, status=status.HTTP_200_OK, safe=False)
         
+class SellerCustomerAPIView(APIView):
+    @csrf_exempt
+    @permission_classes([IsAuthenticated])
+    def get(self, request, *args, **kwargs):
+        user = request.user
+
+        orders = OrderItem.objects.filter(seller=user)
+        backend = SellerCustomerBackend()
+        users = backend.getCustomers(orderItems=orders)
+
+        return JsonResponse(users, status=status.HTTP_200_OK, safe=False)
