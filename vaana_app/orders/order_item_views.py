@@ -79,7 +79,7 @@ class OrderItemTransactionAPIView(APIView):
 class OrderItemCartItemRetrieveUpdateAPIView(RetrieveUpdateAPIView):
     @csrf_exempt
     @permission_classes([IsAuthenticated])
-    def post(self, request, order_id, order_item_id, *args, **kwargs):
+    def put(self, request, order_id, order_item_id, *args, **kwargs):
         user = request.user
         payload = json.loads(request.body)
 
