@@ -41,3 +41,4 @@ class OrderDetailsSerializer(serializers.ModelSerializer):
             'total_tax',
             "order_items",
         ]
+
