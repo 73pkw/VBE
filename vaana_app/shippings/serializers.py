@@ -46,7 +46,10 @@ class ShippoShipmentSerializer(serializers.ModelSerializer):
             "object_id",
             "address_from",
             "address_to",
-            "parcels"
+            "parcels",
+            "carrier_account",
+            "servicelevel_token",
+            "rate"
         ]
 
     def createAddress(self, data):

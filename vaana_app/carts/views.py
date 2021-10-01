@@ -93,6 +93,12 @@ class CartAddView(APIView):
         return JsonResponse(response['body'], status = response['status'])
 
 class CartUpdateAPIView(RetrieveUpdateAPIView):
+    @swagger_auto_schema(
+        operation_description="apiview post description override",
+        security=[],
+        tags=['Carts'],
+        request_body=CartItemSerializer
+    )
     @csrf_exempt
     @permission_classes([IsAuthenticated])
     def put(self, request, id):
@@ -161,6 +167,12 @@ class CartItemView(APIView):
 
 class CartItemUpdateView(RetrieveUpdateAPIView):
 
+        @swagger_auto_schema(
+            operation_description="apiview post description override",
+            request_body=CartItemSerializer,
+            security=[],
+            tags=['Carts'],
+        )
         @permission_classes([IsAuthenticated])
         def put(self, request, id):
             user = request.user

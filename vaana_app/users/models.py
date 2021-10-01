@@ -115,7 +115,7 @@ class User(AbstractBaseUser, PermissionsMixin, TimestampedModel):
 
     auth_provider = models.CharField(max_length=255, blank=False, null=False, default=AUTH_PROVIDERS.get('email'))
 
-    fullname = models.CharField(max_length=255, null=True, blank=True)
+    fullname = models.CharField(max_length=255, null=True, blank=True, default=None)
 
     # The `USERNAME_FIELD` property tells us which field we will use to log in.
     # In this case, we want that to be the email field.
@@ -177,3 +177,12 @@ class User(AbstractBaseUser, PermissionsMixin, TimestampedModel):
         }, settings.SECRET_KEY, algorithm='HS256')
 
         return token
+
+    def update(self, data):
+        self.username = data['username'] if 'username' in data else self.username
+        self.email = data['email'] if 'email' in data else self.email
+        self.fullname = data['fullname'] if 'fullname' in data else self.fullname
+        self.account_type = data['account_type'] if 'account_type' in data else self.account_type
+        self.gender = data['gender'] if 'gender' in data else self.gender
+
+        return self.save()

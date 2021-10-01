@@ -67,10 +67,9 @@ class ShippoShipmentAPIView(APIView):
     def get(self, request, *args, **kwargs):
         shipmentApi = ShippoShipmentAPI()
         page = request.query_params.get('page')
-        objects_id = request.query_params.get('objects_id')
 
         try:
-            apiResponse = shipmentApi.retrieve(objects_id) if objects_id is not None else shipmentApi.all(page)
+            apiResponse = shipmentApi.all(page)
             response = {
                 'body': apiResponse.json(),
                 'status': apiResponse.status_code
@@ -83,7 +82,59 @@ class ShippoShipmentAPIView(APIView):
 
         return JsonResponse(response['body'], status=response['status'], safe=False)
 
-class ShippoTransactionAPIView(APIView):
+class ShipmentRetrieveUpdateAPIView(RetrieveUpdateAPIView):
+    @csrf_exempt
+    @permission_classes([IsAuthenticated])
+    def get(self, request, shipment_id):
+        user = request.user
+        try:
+            shipment = Shipment.objects.get(id=shipment_id)
+            shipmentApi = ShippoShipmentAPI()
+            apiResponse = shipmentApi.retrieve(id=shipment.object_id)
+            response = {
+                'body': apiResponse.json(),
+                'status': apiResponse.status_code
+            }
+        except ObjectDoesNotExist:
+            response = {
+                'body': 'Shipment not found',
+                'status': status.HTTP_404_NOT_FOUND
+            }
+        except Exception as e:
+            response = {
+                'body': str(e),
+                'status': status.HTTP_500_INTERNAL_SERVER_ERROR
+            }
+
+        return JsonResponse(response['body'], status=response['status'], safe=False)
+
+    @csrf_exempt
+    @permission_classes([IsAuthenticated])
+    def put(self, request, shipment_id):
+        user = request.user
+        payload = json.loads(request.body)
+
+        try: 
+            shipment = Shipment.objects.get(id=shipment_id)
+            shipment.update(payload)
+            response = {
+                'body': ShippoShipmentSerializer(shipment).data,
+                'status': status.HTTP_200_OK
+            }
+        except ObjectDoesNotExist:
+            response = {
+                'body': 'Shipment not found',
+                'status': status.HTTP_404_NOT_FOUND
+            }
+        except Exception as e:
+            response = {
+                'body': str(e),
+                'status': status.HTTP_500_INTERNAL_SERVER_ERROR
+            }
+
+        return JsonResponse(response['body'], status=response['status'], safe=False)
+
+''' class ShippoTransactionAPIView(APIView):
     @csrf_exempt
     def post(self, request, *args, **kwargs):
         playload = json.loads(request.body)
@@ -133,20 +184,26 @@ class ShippoTransactionAPIView(APIView):
                 'status': status.HTTP_500_INTERNAL_SERVER_ERROR
             }
 
-        return JsonResponse(response['body'], status=response['status'], safe=False)
+        return JsonResponse(response['body'], status=response['status'], safe=False) '''
 
 class ShippoRatesAPIView(APIView):
     @csrf_exempt
-    def get(self, request, shipment_object_id, *args, **kwargs):
+    def get(self, request, shipment_id, *args, **kwargs):
         page = request.query_params.get('page')
         currency = request.query_params.get('currency')
         ratesApi = ShippoRatesAPI()
 
         try:
-            apiResponse = ratesApi.get_rates_for_shipment(shipment_object_id=shipment_object_id, page=page, currency=currency)
+            shipment = Shipment.objects.get(id=shipment_id)
+            apiResponse = ratesApi.get_rates_for_shipment(shipment_object_id=shipment.object_id, page=page, currency=currency)
             response = {
                 'body': apiResponse.json(),
                 'status': apiResponse.status_code
+            }
+        except ObjectDoesNotExist:
+            response = {
+                'body': 'Shipment not found',
+                'status': status.HTTP_404_NOT_FOUND
             }
         except Exception as e:
             response = {

@@ -7,19 +7,19 @@ on:
 
 jobs:
   # Test application Image
-  # test:
-  #   #    needs: build-and-push
-  #   name: Vaanah Integration and Unit Test
-  #   runs-on: ubuntu-latest
-  #   env:
-  #     COMPOSE_FILE: docker-compose.yml
+  test:
+    #    needs: build-and-push
+    name: Vaanah Integration and Unit Test
+    runs-on: ubuntu-latest
+    env:
+      COMPOSE_FILE: docker-compose.yml
 
-  #   steps:
-  #     - name: Checkout code
-  #       uses: actions/checkout@v2
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-  #     - name: Run tests
-  #       run: docker-compose run vaanah-test
+      - name: Run tests
+        run: docker-compose run vaanah-test
 
   build-and-deploy:
     # needs: test

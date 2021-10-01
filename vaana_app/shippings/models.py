@@ -14,7 +14,7 @@ class Address(TimestampedModel):
     city = models.CharField(max_length=255)
     zip_code = models.CharField(max_length=255)
     country = models.CharField(max_length=255)
-    phone = models.CharField(max_length=255)
+    phone = models.CharField(max_length=255, null=True, blank=True)
     email = models.CharField(max_length=255)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, blank=True, null=True, related_name='shipping_address')
 
@@ -47,6 +47,16 @@ class Shipment(TimestampedModel):
     address_from = models.ForeignKey(Address, on_delete=models.CASCADE, related_name='address_from')
     address_to = models.ForeignKey(Address, on_delete=models.CASCADE, related_name='address_to')
     parcels = models.ManyToManyField(Parcel)
+    carrier_account = models.CharField(max_length=255, null=True, blank=True)
+    servicelevel_token = models.CharField(max_length=255, null=True, blank=True)
+    rate = models.CharField(max_length=255, blank=True, null=True, default=None)
+
+    def update(self, data):
+        self.carrier_account = data['carrier_account'] if 'carrier_account' in data else self.carrier_account
+        self.servicelevel_token = data['servicelevel_token'] if 'servicelevel_token' in data else self.servicelevel_token
+        self.rate = data['rate'] if 'rate' in data else self.rate
+        return self.save()
+        
 
 class Transaction(TimestampedModel):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
