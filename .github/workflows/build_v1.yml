@@ -7,19 +7,19 @@ on:
 
 jobs:
   # Test application Image
-  # test:
-  #   #    needs: build-and-push
-  #   name: Vaanah Integration and Unit Test
-  #   runs-on: ubuntu-latest
-  #   env:
-  #     COMPOSE_FILE: docker-compose.yml
+  test:
+    #    needs: build-and-push
+    name: Vaanah Integration and Unit Test
+    runs-on: ubuntu-latest
+    env:
+      COMPOSE_FILE: docker-compose.yml
 
-  #   steps:
-  #     - name: Checkout code
-  #       uses: actions/checkout@v2
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-  #     - name: Run tests
-  #       run: docker-compose run vaanah-test
+      - name: Run tests
+        run: docker-compose run vaanah-test
 
   build-and-deploy:
     # needs: test
@@ -70,7 +70,7 @@ jobs:
           file: ./Dockerfile.django
           builder: ${{ steps.buildx.outputs.name }}
           push: true
-          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/vaanah-django:v1.5.3
+          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/vaanah-django:v1.5.4
           # cache-from: type=local,src=/tmp/.buildx-cache
           # cache-to: type=local,dest=/tmp/.buildx-cache
 
