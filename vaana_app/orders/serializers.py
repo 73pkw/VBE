@@ -1,6 +1,6 @@
 from .models import Order, OrderItem
 from rest_framework import serializers
-from carts.serializers import CartItemSerializer
+from carts.serializers import CartItemSerializer, CartItemDetailsSerializer
 
 class OrderSerializer(serializers.ModelSerializer):
     class Meta:
@@ -12,8 +12,9 @@ class OrderSerializer(serializers.ModelSerializer):
             'total_tax'
         ]
 
+
 class OrderItemSerializer(serializers.ModelSerializer):
-    cart_item = CartItemSerializer()
+    cart_item = CartItemDetailsSerializer()
     class Meta:
         model = OrderItem
         fields = [
