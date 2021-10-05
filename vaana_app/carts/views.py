@@ -125,6 +125,40 @@ class CartUpdateAPIView(RetrieveUpdateAPIView):
         
         return JsonResponse(response['body'], status = response['status'])
 
+    @swagger_auto_schema(
+        operation_description="apiview post description override",
+        security=[],
+        tags=['Carts'],
+    )
+    @csrf_exempt
+    @permission_classes([IsAuthenticated])
+    def delete(self, request, id):
+        user = request.user
+        try:
+            cart = Cart.objects.get(id=id, owner=user, status = Cart.OPEN)
+            cart.items.through.objects.all().delete()
+            serializer = CartDetailsSerializer(cart)
+            response = {
+                'body': serializer.data,
+                'status': status.HTTP_200_OK
+            }
+        except ObjectDoesNotExist as e:
+            response = {
+                'body': {
+                    'error': str(e)
+                },
+                'status': status.HTTP_404_NOT_FOUND
+            }
+        except Exception as e:
+            response = {
+                'body': {
+                    'error': str(e)
+                },
+                'status': status.HTTP_500_INTERNAL_SERVER_ERROR
+            }
+
+        return JsonResponse(response['body'], status = response['status'])
+
         
 class CartItemView(APIView):
     @swagger_auto_schema(
