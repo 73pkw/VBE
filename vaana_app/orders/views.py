@@ -66,6 +66,31 @@ class OrderItemRetrieveUpdateAPIVIew(RetrieveUpdateAPIView):
             }
 
         return JsonResponse(response['body'], status=response['status'], safe=False)
+    
+    @csrf_exempt
+    @permission_classes([IsAuthenticated])
+    def delete(self, request, order_item_id):
+        user = request.user
+
+        try:
+            order_item = OrderItem.objects.get(id=order_item_id)
+            order_item.delete()
+            response = {
+                'body': 'Record deleted',
+                'status': status.HTTP_200_OK
+            }
+        except ObjectDoesNotExist:
+            response = {
+                'body': 'Order item not found',
+                'status': status.HTTP_404_NOT_FOUND
+            }
+        except Exception as e:
+            response = {
+                'body': str(e),
+                'status': status.HTTP_500_INTERNAL_SERVER_ERROR
+            }
+
+        return JsonResponse(response['body'], status=response['status'], safe=False)
 
 class GetCustomerOrderAPIView(APIView):
     @csrf_exempt

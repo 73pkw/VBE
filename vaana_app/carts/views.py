@@ -156,11 +156,21 @@ class CartItemView(APIView):
                 except ObjectDoesNotExist:
                     cart = Cart.objects.create(owner=user, status = Cart.OPEN)
 
-                item = CartItem.objects.create(product=product, quantity=payload['quantity'])
-                
-                cart.items.add(item)
-                response['body'] = CartDetailsSerializer(cart).data
-                response['status'] = status.HTTP_201_CREATED
+                cartService = CartService()
+
+                if cartService.itemInCart(cart=cart, product_id=product.id) == False:
+
+                    item = CartItem.objects.create(product=product, quantity=payload['quantity'])
+                    
+                    cart.items.add(item)
+                    response['body'] = CartDetailsSerializer(cart).data
+                    response['status'] = status.HTTP_201_CREATED
+                else:
+                    response['body'] = {
+                        'data': CartDetailsSerializer(cart).data,
+                        'error': 'item already in cart'
+                    }
+                    response['status'] = status.HTTP_400_BAD_REQUEST
                 
         return JsonResponse(response['body'], status = response['status'])
 
