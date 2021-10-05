@@ -62,8 +62,9 @@
           "I hate chatbots actually so please could you get out of my screen and connect me to someone made from flesh thanks"
         ],
         "answers": [
-          { "answer": "Yes of course" },
-          { "answer": "Yes of course, <br>wait a few minute please i am calling Teddy..." }
+          { "answer": "Yes of course, <br>wait a few minute please i am calling Teddy..." },
+          { "answer": "Yes of course" }
+          
   
         ]
       },
@@ -139,6 +140,8 @@
         "intent": "user.registerNewsletter",
         "utterances": [
           "register newsletter",
+          "register me in your newsletter",
+          "register me",
           "newsletter",
           "send me your newsletter",
           "how can i receive your newsletter ?"
