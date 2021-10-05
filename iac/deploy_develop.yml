@@ -76,19 +76,19 @@
         name: docker
 
     # change vaanah_test3 to vaanah_back-new ok
-    # - name: Kill Previous container
-    #   shell: |
-    #     docker kill vaanah_back_develop
-    #   become: yes
+    - name: Kill Previous container
+      shell: |
+        docker kill vaanah_back_develop
+      become: yes
 
-    # - name: Prune container
-    #   docker_prune:
-    #     containers: yes
-    #     images: yes
-    #     images_filters:
-    #       dangling: false
-    #     volumes: yes
-    #     builder_cache: yes
+    - name: Prune container
+      docker_prune:
+        containers: yes
+        images: yes
+        images_filters:
+          dangling: false
+        volumes: yes
+        builder_cache: yes
 
     - name: Pull Backend app locally
       shell: |
