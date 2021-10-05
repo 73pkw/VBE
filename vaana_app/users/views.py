@@ -97,7 +97,7 @@ class SellerRegistrationAPIView(APIView):
        
         token = RefreshToken.for_user(user).access_token
         email = user.email
-        absurl = settings.FRONT_URL + '/email/verify/'+"?token="+str(token)+ "&email="+email        
+        absurl = settings.FRONT_URL +"/?token="+str(token)+ "&email="+email        
  
         context = {
             "username": user.username, 
@@ -108,7 +108,7 @@ class SellerRegistrationAPIView(APIView):
  
         email_body = html_template 
         data = {'email_body': email_body, 'to_email': user.email,
-                'email_subject': 'Verify your email'}
+                'email_subject': 'Welcome to Vaanah !'}
  
         send_email(data)
  
@@ -157,7 +157,7 @@ class RegistrationAPIView(APIView):
         user = User.objects.get(email=user_data['email']) """
         token = RefreshToken.for_user(user).access_token
         email = user.email
-        absurl = settings.FRONT_URL + '/email/verify/'+"?token="+str(token)+ "&email="+email        
+        absurl = settings.FRONT_URL +"/?token="+str(token)+ "&email="+email        
  
         context = {
             "username": user.username, 
@@ -171,7 +171,7 @@ class RegistrationAPIView(APIView):
         #absurl = 'http://'+current_site+relativeLink+"?token="+str(token)+ "&email="+ email
         email_body = html_template #+'Hi '+user.username +' \nUse the link below to verify your email \n' + absurl
         data = {'email_body': email_body, 'to_email': user.email,
-                'email_subject': 'Verify your email'}
+                'email_subject': 'Welcome to Vaanah !'}
  
         send_email(data)
  
@@ -193,10 +193,10 @@ class ResendEmailAPI(APIView):
             relativeLink = reverse('email-resend')
  
             #absurl = 'http://'+current_site+relativeLink+"?token="+str(token)+ email
-            absurl = settings.FRONT_URL + '/email/verify/'+"?token="+str(token)+ "&email="+email
+            absurl = settings.FRONT_URL + "/?token="+str(token)+ "&email="+email
             email_body = 'Hi '+user.username +' \nUse the link below to verify your email \n' + absurl
             data = {'email_body': email_body, 'to_email': user.email,
-                'email_subject': 'Verify your email'}
+                'email_subject': 'Welcome to Vaanah !'}
             send_email(data)
             return Response({'code': '200'} , status=status.HTTP_200_OK)
         except ObjectDoesNotExist as e:
