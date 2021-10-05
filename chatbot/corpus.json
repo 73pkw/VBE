@@ -140,6 +140,8 @@
         "intent": "user.registerNewsletter",
         "utterances": [
           "register newsletter",
+          "register me in your newsletter",
+          "register me",
           "newsletter",
           "send me your newsletter",
           "how can i receive your newsletter ?"
