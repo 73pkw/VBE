@@ -75,7 +75,7 @@
       pip:
         name: docker
 
-    # change vaanah_test3 to vaanah_back-new
+    # change vaanah_test3 to vaanah_back-new ok
     # - name: Kill Previous container
     #   shell: |
     #     docker kill vaanah_back_develop
